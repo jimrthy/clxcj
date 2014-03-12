@@ -1,13 +1,14 @@
 (ns clxcj.core
   (:require [net.n01se.clojure-jna :as jna])
-  (:import [com.sun.jna Native]))
+  (:import [com.sun.jna Native Pointer Structure]
+           [java.nio Buffer]))
 
 ;;; TODO: How do I specify what's in the lxc_container?
 ;;; This is something that's used heavily
  
 ;;; c.f. https://qa.linuxcontainers.org/master/current/doc/api/lxccontainer_8h.html
 ;;; for the actual docs.
-(jna/to-ns native-lxc lxc [Native/Structure lxc_container_new  ; Create new container
+(jna/to-ns native-lxc lxc [Structure lxc_container_new  ; Create new container
                            Integer lxc_container_get  ; Add reference to container
                            Integer lxc_container_put  ; Drop reference to container
                            Integer lxc_get_wait_states ; Obtain list of all container states
@@ -31,5 +32,5 @@
   (let [n (native-lxc/list_all_containers names containers)]
     (if (> n 0)
       (throw (RuntimeException. "Deal with success"))
-      (throw RuntimeException. "Failed to retrieve list"))))
+      (throw (RuntimeException. "Failed to retrieve list")))))
 
